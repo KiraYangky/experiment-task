@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>慈善捐赠持续按压任务</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif;
+      background: linear-gradient(135deg, #f5f7fb, #e8eef8);
+      color: #222;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .app {
+      width: min(920px, 100%);
+      background: white;
+      border-radius: 24px;
+      box-shadow: 0 18px 50px rgba(36, 52, 86, 0.15);
+      padding: 34px;
+    }
+    .hidden { display: none; }
+    h1 { margin-top: 0; font-size: 30px; }
+    h2 { margin-top: 0; font-size: 26px; }
+    p, li { font-size: 18px; line-height: 1.75; }
+    label {
+      display: block;
+      margin: 18px 0 8px;
+      font-weight: 700;
+      font-size: 17px;
+    }
+    input, select {
+      width: 100%;
+      padding: 13px 14px;
+      border: 1px solid #cfd7e6;
+      border-radius: 12px;
+      font-size: 17px;
+    }
+    button {
+      border: none;
+      border-radius: 14px;
+      padding: 13px 24px;
+      font-size: 17px;
+      font-weight: 700;
+      background: #2f66d0;
+      color: white;
+      cursor: pointer;
+      margin-top: 24px;
+    }
+    button.secondary { background: #667085; }
+    button:disabled { background: #aab3c5; cursor: not-allowed; }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+    .notice {
+      background: #f0f6ff;
+      border-left: 5px solid #2f66d0;
+      padding: 18px 20px;
+      border-radius: 12px;
+      margin: 20px 0;
+    }
+    .illustration {
+      display: flex;
+      justify-content: center;
+      background: #fafcff;
+      border: 1px solid #e4eaf5;
+      border-radius: 18px;
+      padding: 18px;
+      margin: 20px 0;
+    }
+    .task-box {
+      text-align: center;
+      border: 2px dashed #9db3dc;
+      background: #f8fbff;
+      border-radius: 24px;
+      padding: 36px 18px;
+      user-select: none;
+    }
+    .timer {
+      font-variant-numeric: tabular-nums;
+      font-size: clamp(48px, 9vw, 94px);
+      font-weight: 800;
+      margin: 22px 0;
+      color: #1d4ed8;
+    }
+    .status {
+      font-size: 22px;
+      font-weight: 700;
+      color: #344054;
+    }
+    .small { font-size: 15px; color: #667085; }
+    .result {
+      font-size: 28px;
+      font-weight: 800;
+      color: #1d4ed8;
+      margin: 24px 0;
+    }
+    @media (max-width: 700px) {
+      .row { grid-template-columns: 1fr; }
+      .app { padding: 24px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <section id="page1">
+      <h1>慈善捐赠持续按压任务</h1>
+      <p>请先填写基本信息。填写完成后进入任务说明页。</p>
+
+      <label for="name">姓名</label>
+      <input id="name" type="text" autocomplete="name" required />
+
+      <div class="row">
+        <div>
+          <label for="age">年龄</label>
+          <input id="age" type="number" min="1" max="120" required />
+        </div>
+        <div>
+          <label for="gender">性别</label>
+          <select id="gender" required>
+            <option value="">请选择</option>
+            <option value="女">女</option>
+            <option value="男">男</option>
+            <option value="其他/不便说明">其他/不便说明</option>
+          </select>
+        </div>
+      </div>
+
+      <button id="toInstruction">下一页</button>
+    </section>
+
+    <section id="page2" class="hidden">
+      <h2>任务说明</h2>
+      <div class="notice">
+        <p>请你将鼠标放在左手的左边，用左手小手指持续摁压鼠标右键。</p>
+        <p>注意：手腕、手掌、其他手指都悬空。</p>
+        <p>如果你摁压时间越长，我们给慈善组织捐的钱就越多。请你决定你要坚持多长时间，这完全由你自己决定。</p>
+        <p>注意：我们不是为了测验极限，所以不要勉强自己。如果感到不舒服，可以随时拿开小手指。</p>
+      </div>
+
+      <div class="illustration" aria-label="任务姿势示意图">
+        <svg width="760" height="360" viewBox="0 0 760 360" role="img" aria-labelledby="svgTitle svgDesc">
+          <title id="svgTitle">左手小手指按压鼠标右键示意图</title>
+          <desc id="svgDesc">鼠标在左手左边，左手小手指按压鼠标右键，其余手指和手掌悬空。</desc>
+          <rect x="0" y="0" width="760" height="360" rx="22" fill="#f7fbff" />
+          <text x="380" y="34" text-anchor="middle" font-size="22" font-weight="700" fill="#1d2939">姿势示意图</text>
+
+          <!-- table -->
+          <rect x="60" y="285" width="640" height="18" rx="8" fill="#d0d5dd" />
+          <text x="380" y="332" text-anchor="middle" font-size="16" fill="#667085">手腕、手掌和其他手指保持悬空；只有左手小手指持续按压鼠标右键</text>
+
+          <!-- mouse -->
+          <g transform="translate(145,110)">
+            <rect x="0" y="0" width="165" height="210" rx="78" fill="#e6eefb" stroke="#2f66d0" stroke-width="4" />
+            <path d="M82 3 L82 95" stroke="#2f66d0" stroke-width="4" />
+            <path d="M82 95 L82 210" stroke="#c0cbe0" stroke-width="2" />
+            <rect x="93" y="20" width="54" height="78" rx="24" fill="#bfd2f7" stroke="#2f66d0" stroke-width="3" />
+            <text x="120" y="65" text-anchor="middle" font-size="16" font-weight="700" fill="#1d4ed8">右键</text>
+            <text x="82" y="235" text-anchor="middle" font-size="17" fill="#344054">鼠标放在左手左边</text>
+          </g>
+
+          <!-- suspended palm -->
+          <g transform="translate(360,95)">
+            <ellipse cx="155" cy="122" rx="90" ry="68" fill="#ffe0c2" stroke="#c47a3b" stroke-width="4" />
+            <text x="155" y="128" text-anchor="middle" font-size="17" font-weight="700" fill="#7a3f13">手掌悬空</text>
+
+            <!-- fingers suspended -->
+            <rect x="75" y="16" width="34" height="118" rx="17" fill="#ffe0c2" stroke="#c47a3b" stroke-width="4" transform="rotate(-14 92 134)" />
+            <rect x="115" y="0" width="35" height="135" rx="17" fill="#ffe0c2" stroke="#c47a3b" stroke-width="4" transform="rotate(-5 132 135)" />
+            <rect x="157" y="4" width="35" height="130" rx="17" fill="#ffe0c2" stroke="#c47a3b" stroke-width="4" transform="rotate(6 174 135)" />
+            <rect x="198" y="22" width="34" height="112" rx="17" fill="#ffe0c2" stroke="#c47a3b" stroke-width="4" transform="rotate(15 215 134)" />
+
+            <!-- pinky pressing mouse -->
+            <path d="M78 172 C20 160 -70 135 -145 70" fill="none" stroke="#c47a3b" stroke-width="34" stroke-linecap="round" />
+            <path d="M78 172 C20 160 -70 135 -145 70" fill="none" stroke="#ffe0c2" stroke-width="26" stroke-linecap="round" />
+            <circle cx="-145" cy="70" r="17" fill="#ffe0c2" stroke="#c47a3b" stroke-width="4" />
+            <text x="-36" y="206" text-anchor="middle" font-size="17" fill="#344054">左手小手指</text>
+
+            <!-- wrist floating -->
+            <rect x="205" y="150" width="120" height="50" rx="25" fill="#ffe0c2" stroke="#c47a3b" stroke-width="4" transform="rotate(16 205 150)" />
+            <text x="290" y="236" text-anchor="middle" font-size="17" fill="#344054">手腕悬空</text>
+          </g>
+
+          <path d="M292 86 C315 60 345 58 372 78" fill="none" stroke="#12b76a" stroke-width="4" marker-end="url(#arrow)" />
+          <text x="335" y="55" text-anchor="middle" font-size="16" font-weight="700" fill="#027a48">小手指按压右键</text>
+          <defs>
+            <marker id="arrow" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto" markerUnits="strokeWidth">
+              <path d="M0,0 L0,6 L7,3 z" fill="#12b76a" />
+            </marker>
+          </defs>
+        </svg>
+      </div>
+
+      <button id="toTask">我已理解，开始任务</button>
+    </section>
+
+    <section id="page3" class="hidden">
+      <h2>开始按压</h2>
+      <div class="task-box" id="pressArea">
+        <div class="status" id="statusText">请用左手小手指按住鼠标右键开始计时</div>
+        <div class="timer" id="timer">00:00.000</div>
+        <p class="small">按住鼠标右键时计时开始；松开后自动停止并进入结果页。浏览器右键菜单已被禁用。</p>
+      </div>
+    </section>
+
+    <section id="page4" class="hidden">
+      <h2>任务结束</h2>
+      <p>感谢你的参与！</p>
+      <div class="result" id="resultText"></div>
+      <p id="resultDetail"></p>
+      <button id="downloadCsv">下载本次数据 CSV</button>
+      <button class="secondary" id="restart">重新开始</button>
+    </section>
+  </main>
+
+  <script>
+    const pages = ["page1", "page2", "page3", "page4"];
+    const data = {
+      name: "",
+      age: "",
+      gender: "",
+      durationMs: 0,
+      durationSec: 0,
+      startTimeISO: "",
+      endTimeISO: ""
+    };
+
+    let isPressing = false;
+    let startTime = 0;
+    let animationFrame = null;
+
+    function showPage(id) {
+      pages.forEach(page => document.getElementById(page).classList.toggle("hidden", page !== id));
+    }
+
+    function formatTime(ms) {
+      const totalSeconds = Math.floor(ms / 1000);
+      const minutes = Math.floor(totalSeconds / 60);
+      const seconds = totalSeconds % 60;
+      const milliseconds = Math.floor(ms % 1000);
+      return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}.${String(milliseconds).padStart(3, "0")}`;
+    }
+
+    function formatChineseDuration(ms) {
+      const totalSeconds = ms / 1000;
+      const minutes = Math.floor(totalSeconds / 60);
+      const seconds = totalSeconds - minutes * 60;
+      if (minutes > 0) {
+        return `${minutes}分${seconds.toFixed(2)}秒`;
+      }
+      return `${seconds.toFixed(2)}秒`;
+    }
+
+    function updateTimer() {
+      if (!isPressing) return;
+      const elapsed = performance.now() - startTime;
+      document.getElementById("timer").textContent = formatTime(elapsed);
+      animationFrame = requestAnimationFrame(updateTimer);
+    }
+
+    document.addEventListener("contextmenu", event => event.preventDefault());
+
+    document.getElementById("toInstruction").addEventListener("click", () => {
+      const name = document.getElementById("name").value.trim();
+      const age = document.getElementById("age").value.trim();
+      const gender = document.getElementById("gender").value;
+
+      if (!name || !age || !gender) {
+        alert("请完整填写姓名、年龄和性别。");
+        return;
+      }
+
+      data.name = name;
+      data.age = age;
+      data.gender = gender;
+      showPage("page2");
+    });
+
+    document.getElementById("toTask").addEventListener("click", () => {
+      document.getElementById("timer").textContent = "00:00.000";
+      document.getElementById("statusText").textContent = "请用左手小手指按住鼠标右键开始计时";
+      showPage("page3");
+    });
+
+    document.addEventListener("mousedown", event => {
+      if (document.getElementById("page3").classList.contains("hidden")) return;
+      if (event.button !== 2 || isPressing) return;
+
+      isPressing = true;
+      startTime = performance.now();
+      data.startTimeISO = new Date().toISOString();
+      document.getElementById("statusText").textContent = "正在计时，请根据自己的决定继续或松开";
+      updateTimer();
+    });
+
+    document.addEventListener("mouseup", event => {
+      if (document.getElementById("page3").classList.contains("hidden")) return;
+      if (event.button !== 2 || !isPressing) return;
+
+      isPressing = false;
+      cancelAnimationFrame(animationFrame);
+      data.durationMs = performance.now() - startTime;
+      data.durationSec = data.durationMs / 1000;
+      data.endTimeISO = new Date().toISOString();
+
+      document.getElementById("resultText").textContent = `你坚持了 ${formatChineseDuration(data.durationMs)}`;
+      document.getElementById("resultDetail").textContent = `精确记录：${data.durationSec.toFixed(3)} 秒。`;
+      showPage("page4");
+    });
+
+    document.getElementById("downloadCsv").addEventListener("click", () => {
+      const headers = ["姓名", "年龄", "性别", "开始时间", "结束时间", "持续时间_秒", "持续时间_毫秒"];
+      const values = [
+        data.name,
+        data.age,
+        data.gender,
+        data.startTimeISO,
+        data.endTimeISO,
+        data.durationSec.toFixed(3),
+        Math.round(data.durationMs)
+      ];
+      const csv = "\ufeff" + headers.join(",") + "\n" + values.map(v => `"${String(v).replaceAll('"', '""')}"`).join(",");
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `press_task_${data.name || "participant"}_${Date.now()}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    });
+
+    document.getElementById("restart").addEventListener("click", () => {
+      data.durationMs = 0;
+      data.durationSec = 0;
+      data.startTimeISO = "";
+      data.endTimeISO = "";
+      document.getElementById("timer").textContent = "00:00.000";
+      showPage("page1");
+    });
+  </script>
+</body>
+</html>
