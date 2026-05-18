@@ -1,11 +1,14 @@
+```html
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>慈善捐赠持续按压任务</title>
+
   <style>
     * { box-sizing: border-box; }
+
     body {
       margin: 0;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif;
@@ -17,6 +20,7 @@
       justify-content: center;
       padding: 12px;
     }
+
     .app {
       width: min(920px, 100%);
       background: white;
@@ -24,23 +28,42 @@
       box-shadow: 0 18px 50px rgba(36, 52, 86, 0.15);
       padding: 22px 26px;
     }
-    .hidden { display: none; }
-    h1 { margin: 0 0 12px; font-size: 26px; }
-    h2 { margin: 0 0 12px; font-size: 23px; }
-    p, li { font-size: 16px; line-height: 1.45; }
+
+    .hidden {
+      display: none;
+    }
+
+    h1 {
+      margin: 0 0 12px;
+      font-size: 26px;
+    }
+
+    h2 {
+      margin: 0 0 12px;
+      font-size: 23px;
+    }
+
+    p {
+      font-size: 16px;
+      line-height: 1.45;
+    }
+
     label {
       display: block;
       margin: 12px 0 6px;
       font-weight: 700;
       font-size: 16px;
     }
-    input, select {
+
+    input,
+    select {
       width: 100%;
       padding: 11px 12px;
       border: 1px solid #cfd7e6;
       border-radius: 12px;
       font-size: 16px;
     }
+
     button {
       border: none;
       border-radius: 14px;
@@ -52,9 +75,17 @@
       cursor: pointer;
       margin-top: 14px;
     }
-    button.secondary { background: #667085; }
-    button:disabled { background: #aab3c5; cursor: not-allowed; }
-    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+
+    button.secondary {
+      background: #667085;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
     .notice {
       background: #f0f6ff;
       border-left: 5px solid #2f66d0;
@@ -62,7 +93,11 @@
       border-radius: 12px;
       margin: 12px 0;
     }
-    .notice p { margin: 6px 0; }
+
+    .notice p {
+      margin: 6px 0;
+    }
+
     .illustration {
       display: flex;
       justify-content: center;
@@ -72,6 +107,7 @@
       padding: 10px;
       margin: 10px 0;
     }
+
     .instruction-image {
       width: min(620px, 100%);
       max-height: 300px;
@@ -79,6 +115,7 @@
       border-radius: 12px;
       display: block;
     }
+
     .task-box {
       text-align: center;
       border: 2px dashed #9db3dc;
@@ -87,6 +124,7 @@
       padding: 36px 18px;
       user-select: none;
     }
+
     .timer {
       font-variant-numeric: tabular-nums;
       font-size: clamp(48px, 9vw, 94px);
@@ -94,213 +132,473 @@
       margin: 22px 0;
       color: #1d4ed8;
     }
+
     .status {
       font-size: 22px;
       font-weight: 700;
       color: #344054;
     }
-    .small { font-size: 15px; color: #667085; }
+
+    .small {
+      font-size: 15px;
+      color: #667085;
+    }
+
     .result {
       font-size: 28px;
       font-weight: 800;
       color: #1d4ed8;
       margin: 24px 0;
     }
+
     @media (max-width: 700px) {
-      .row { grid-template-columns: 1fr; }
-      .app { padding: 24px; }
+      .row {
+        grid-template-columns: 1fr;
+      }
+
+      .app {
+        padding: 18px;
+      }
     }
   </style>
 </head>
+
 <body>
-  <main class="app">
-    <section id="page1">
-      <h1>慈善捐赠持续按压任务</h1>
-      <p>请先填写基本信息。填写完成后进入任务说明页。</p>
 
-      <label for="name">姓名</label>
-      <input id="name" type="text" autocomplete="name" required />
+<main class="app">
 
-      <div class="row">
-        <div>
-          <label for="age">年龄</label>
-          <input id="age" type="number" min="1" max="120" required />
-        </div>
-        <div>
-          <label for="gender">性别</label>
-          <select id="gender" required>
-            <option value="">请选择</option>
-            <option value="女">女</option>
-            <option value="男">男</option>
-            <option value="其他/不便说明">其他/不便说明</option>
-          </select>
-        </div>
+  <!-- PAGE 1 -->
+  <section id="page1">
+
+    <h1>慈善捐赠持续按压任务</h1>
+
+    <p>请先填写基本信息。</p>
+
+    <label>姓名</label>
+    <input id="name" type="text" />
+
+    <div class="row">
+
+      <div>
+        <label>年龄</label>
+        <input id="age" type="number" min="1" max="120" />
       </div>
 
-      <button id="toInstruction">下一页</button>
-    </section>
+      <div>
+        <label>性别</label>
 
-    <section id="page2" class="hidden">
-      <h2>任务说明</h2>
-      <div class="notice">
-        <p>请你将鼠标放在左手的左边，用左手小手指持续摁压鼠标右键。</p>
-        <p>注意：手腕、手掌、其他手指都悬空。</p>
-        <p>如果你摁压时间越长，我们给慈善组织捐的钱就越多。请你决定你要坚持多长时间，这完全由你自己决定。</p>
-        <p>注意：我们不是为了测验极限，所以不要勉强自己。如果感到不舒服，可以随时拿开小手指。</p>
+        <select id="gender">
+          <option value="">请选择</option>
+          <option value="女">女</option>
+          <option value="男">男</option>
+          <option value="其他/不便说明">其他/不便说明</option>
+        </select>
+
       </div>
 
-      <div class="illustration" aria-label="左手小拇指按压鼠标右键示意图">
-        <img class="instruction-image" src="press_instruction.webp" alt="用左手小拇指按压鼠标右键，其他手指和手掌保持悬空的示意图" />
+    </div>
+
+    <button id="toInstruction">
+      下一页
+    </button>
+
+  </section>
+
+
+  <!-- PAGE 2 -->
+  <section id="page2" class="hidden">
+
+    <h2>任务说明</h2>
+
+    <div class="notice">
+
+      <p>请你将鼠标放在左手的左边，用左手小手指持续摁压鼠标右键。</p>
+
+      <p>注意：手腕、手掌、其他手指都悬空。</p>
+
+      <p>
+        如果你摁压时间越长，
+        我们给慈善组织捐的钱就越多。
+        请你决定你要坚持多长时间，
+        这完全由你自己决定。
+      </p>
+
+      <p>
+        注意：
+        我们不是为了测验极限，
+        所以不要勉强自己。
+        如果感到不舒服，
+        可以随时拿开小手指。
+      </p>
+
+    </div>
+
+    <div class="illustration">
+
+      <img
+        class="instruction-image"
+        src="press_instruction.webp"
+      />
+
+    </div>
+
+    <button id="toTask">
+      我已理解，开始任务
+    </button>
+
+  </section>
+
+
+  <!-- PAGE 3 -->
+  <section id="page3" class="hidden">
+
+    <h2>开始按压</h2>
+
+    <div class="task-box">
+
+      <div class="status" id="statusText">
+        请用左手小手指按住鼠标右键开始计时
       </div>
 
-      <button id="toTask">我已理解，开始任务</button>
-    </section>
-
-    <section id="page3" class="hidden">
-      <h2>开始按压</h2>
-      <div class="task-box" id="pressArea">
-        <div class="status" id="statusText">请用左手小手指按住鼠标右键开始计时</div>
-        <div class="timer" id="timer">00:00.000</div>
-        <p class="small">按住鼠标右键时计时开始；松开后自动停止并进入结果页。浏览器右键菜单已被禁用。</p>
+      <div class="timer" id="timer">
+        00:00.000
       </div>
-    </section>
 
-    <section id="page4" class="hidden">
-      <h2>任务结束</h2>
-      <p>感谢你的参与！</p>
-      <div class="result" id="resultText"></div>
-      <p id="resultDetail"></p>
-      <button id="downloadCsv">下载本次数据 CSV</button>
-      <button class="secondary" id="restart">重新开始</button>
-    </section>
-  </main>
+      <p class="small">
+        按住鼠标右键时开始计时；
+        松开后会询问是否为意外结束。
+      </p>
 
-  <script>
-    const pages = ["page1", "page2", "page3", "page4"];
-    const data = {
-      name: "",
-      age: "",
-      gender: "",
-      durationMs: 0,
-      durationSec: 0,
-      startTimeISO: "",
-      endTimeISO: ""
-    };
+    </div>
 
-    let isPressing = false;
-    let startTime = 0;
-    let animationFrame = null;
+  </section>
 
-    function showPage(id) {
-      pages.forEach(page => document.getElementById(page).classList.toggle("hidden", page !== id));
+
+  <!-- PAGE 4 -->
+  <section id="page4" class="hidden">
+
+    <h2>任务结束</h2>
+
+    <p>感谢你的参与！</p>
+
+    <div class="result" id="resultText"></div>
+
+    <p id="resultDetail"></p>
+
+    <button id="downloadCsv">
+      下载本次数据 CSV
+    </button>
+
+    <button class="secondary" id="restart">
+      重新开始
+    </button>
+
+  </section>
+
+</main>
+
+<script>
+
+const pages = [
+  "page1",
+  "page2",
+  "page3",
+  "page4"
+];
+
+const data = {
+  name: "",
+  age: "",
+  gender: "",
+  durationMs: 0,
+  durationSec: 0,
+  startTimeISO: "",
+  endTimeISO: ""
+};
+
+let isPressing = false;
+let startTime = 0;
+let animationFrame = null;
+
+
+function showPage(id) {
+
+  pages.forEach(page => {
+
+    document
+      .getElementById(page)
+      .classList
+      .toggle("hidden", page !== id);
+
+  });
+
+}
+
+
+function formatTime(ms) {
+
+  const totalSeconds = Math.floor(ms / 1000);
+
+  const minutes = Math.floor(totalSeconds / 60);
+
+  const seconds = totalSeconds % 60;
+
+  const milliseconds = Math.floor(ms % 1000);
+
+  return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}.${String(milliseconds).padStart(3, "0")}`;
+
+}
+
+
+function formatChineseDuration(ms) {
+
+  const totalSeconds = ms / 1000;
+
+  const minutes = Math.floor(totalSeconds / 60);
+
+  const seconds = totalSeconds - minutes * 60;
+
+  if (minutes > 0) {
+
+    return `${minutes}分${seconds.toFixed(2)}秒`;
+
+  }
+
+  return `${seconds.toFixed(2)}秒`;
+
+}
+
+
+function updateTimer() {
+
+  if (!isPressing) return;
+
+  const elapsed = performance.now() - startTime;
+
+  document.getElementById("timer").textContent =
+    formatTime(elapsed);
+
+  animationFrame =
+    requestAnimationFrame(updateTimer);
+
+}
+
+
+document.addEventListener(
+  "contextmenu",
+  e => e.preventDefault()
+);
+
+
+document
+.getElementById("toInstruction")
+.addEventListener("click", () => {
+
+  const name =
+    document.getElementById("name").value.trim();
+
+  const age =
+    document.getElementById("age").value.trim();
+
+  const gender =
+    document.getElementById("gender").value;
+
+  if (!name || !age || !gender) {
+
+    alert("请完整填写信息");
+
+    return;
+
+  }
+
+  data.name = name;
+  data.age = age;
+  data.gender = gender;
+
+  showPage("page2");
+
+});
+
+
+document
+.getElementById("toTask")
+.addEventListener("click", () => {
+
+  document.getElementById("timer").textContent =
+    "00:00.000";
+
+  document.getElementById("statusText").textContent =
+    "请用左手小手指按住鼠标右键开始计时";
+
+  showPage("page3");
+
+});
+
+
+document.addEventListener(
+  "mousedown",
+  event => {
+
+    if (
+      document
+      .getElementById("page3")
+      .classList
+      .contains("hidden")
+    ) return;
+
+    if (event.button !== 2 || isPressing)
+      return;
+
+    isPressing = true;
+
+    startTime = performance.now();
+
+    data.startTimeISO =
+      new Date().toISOString();
+
+    document.getElementById("statusText").textContent =
+      "正在计时，请根据自己的决定继续或松开";
+
+    updateTimer();
+
+  }
+);
+
+
+document.addEventListener(
+  "mouseup",
+  event => {
+
+    if (
+      document
+      .getElementById("page3")
+      .classList
+      .contains("hidden")
+    ) return;
+
+    if (event.button !== 2 || !isPressing)
+      return;
+
+    isPressing = false;
+
+    cancelAnimationFrame(animationFrame);
+
+    const currentDurationMs =
+      performance.now() - startTime;
+
+    const accidental = confirm(
+      "刚才是意外结束的吗？\n\n点击“确定”重新开始\n点击“取消”结束并记录数据"
+    );
+
+    // 意外结束 → 重来
+    if (accidental) {
+
+      document.getElementById("timer").textContent =
+        "00:00.000";
+
+      document.getElementById("statusText").textContent =
+        "请用左手小手指按住鼠标右键开始计时";
+
+      return;
+
     }
 
-    function formatTime(ms) {
-      const totalSeconds = Math.floor(ms / 1000);
-      const minutes = Math.floor(totalSeconds / 60);
-      const seconds = totalSeconds % 60;
-      const milliseconds = Math.floor(ms % 1000);
-      return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}.${String(milliseconds).padStart(3, "0")}`;
-    }
+    // 正常结束
+    data.durationMs = currentDurationMs;
 
-    function formatChineseDuration(ms) {
-      const totalSeconds = ms / 1000;
-      const minutes = Math.floor(totalSeconds / 60);
-      const seconds = totalSeconds - minutes * 60;
-      if (minutes > 0) {
-        return `${minutes}分${seconds.toFixed(2)}秒`;
-      }
-      return `${seconds.toFixed(2)}秒`;
-    }
+    data.durationSec =
+      data.durationMs / 1000;
 
-    function updateTimer() {
-      if (!isPressing) return;
-      const elapsed = performance.now() - startTime;
-      document.getElementById("timer").textContent = formatTime(elapsed);
-      animationFrame = requestAnimationFrame(updateTimer);
-    }
+    data.endTimeISO =
+      new Date().toISOString();
 
-    document.addEventListener("contextmenu", event => event.preventDefault());
+    document.getElementById("resultText").textContent =
+      `你坚持了 ${formatChineseDuration(data.durationMs)}`;
 
-    document.getElementById("toInstruction").addEventListener("click", () => {
-      const name = document.getElementById("name").value.trim();
-      const age = document.getElementById("age").value.trim();
-      const gender = document.getElementById("gender").value;
+    document.getElementById("resultDetail").textContent =
+      `精确记录：${data.durationSec.toFixed(3)} 秒`;
 
-      if (!name || !age || !gender) {
-        alert("请完整填写姓名、年龄和性别。");
-        return;
-      }
+    showPage("page4");
 
-      data.name = name;
-      data.age = age;
-      data.gender = gender;
-      showPage("page2");
-    });
+  }
+);
 
-    document.getElementById("toTask").addEventListener("click", () => {
-      document.getElementById("timer").textContent = "00:00.000";
-      document.getElementById("statusText").textContent = "请用左手小手指按住鼠标右键开始计时";
-      showPage("page3");
-    });
 
-    document.addEventListener("mousedown", event => {
-      if (document.getElementById("page3").classList.contains("hidden")) return;
-      if (event.button !== 2 || isPressing) return;
+document
+.getElementById("downloadCsv")
+.addEventListener("click", () => {
 
-      isPressing = true;
-      startTime = performance.now();
-      data.startTimeISO = new Date().toISOString();
-      document.getElementById("statusText").textContent = "正在计时，请根据自己的决定继续或松开";
-      updateTimer();
-    });
+  const headers = [
+    "姓名",
+    "年龄",
+    "性别",
+    "开始时间",
+    "结束时间",
+    "持续时间_秒",
+    "持续时间_毫秒"
+  ];
 
-    document.addEventListener("mouseup", event => {
-      if (document.getElementById("page3").classList.contains("hidden")) return;
-      if (event.button !== 2 || !isPressing) return;
+  const values = [
+    data.name,
+    data.age,
+    data.gender,
+    data.startTimeISO,
+    data.endTimeISO,
+    data.durationSec.toFixed(3),
+    Math.round(data.durationMs)
+  ];
 
-      isPressing = false;
-      cancelAnimationFrame(animationFrame);
-      data.durationMs = performance.now() - startTime;
-      data.durationSec = data.durationMs / 1000;
-      data.endTimeISO = new Date().toISOString();
+  const csv =
+    "\ufeff"
+    + headers.join(",")
+    + "\n"
+    + values
+      .map(v => `"${String(v).replaceAll('"', '""')}"`)
+      .join(",");
 
-      document.getElementById("resultText").textContent = `你坚持了 ${formatChineseDuration(data.durationMs)}`;
-      document.getElementById("resultDetail").textContent = `精确记录：${data.durationSec.toFixed(3)} 秒。`;
-      showPage("page4");
-    });
+  const blob =
+    new Blob(
+      [csv],
+      { type: "text/csv;charset=utf-8;" }
+    );
 
-    document.getElementById("downloadCsv").addEventListener("click", () => {
-      const headers = ["姓名", "年龄", "性别", "开始时间", "结束时间", "持续时间_秒", "持续时间_毫秒"];
-      const values = [
-        data.name,
-        data.age,
-        data.gender,
-        data.startTimeISO,
-        data.endTimeISO,
-        data.durationSec.toFixed(3),
-        Math.round(data.durationMs)
-      ];
-      const csv = "\ufeff" + headers.join(",") + "\n" + values.map(v => `"${String(v).replaceAll('"', '""')}"`).join(",");
-      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `press_task_${data.name || "participant"}_${Date.now()}.csv`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    });
+  const url =
+    URL.createObjectURL(blob);
 
-    document.getElementById("restart").addEventListener("click", () => {
-      data.durationMs = 0;
-      data.durationSec = 0;
-      data.startTimeISO = "";
-      data.endTimeISO = "";
-      document.getElementById("timer").textContent = "00:00.000";
-      showPage("page1");
-    });
-  </script>
+  const a =
+    document.createElement("a");
+
+  a.href = url;
+
+  a.download =
+    `press_task_${data.name}_${Date.now()}.csv`;
+
+  document.body.appendChild(a);
+
+  a.click();
+
+  document.body.removeChild(a);
+
+  URL.revokeObjectURL(url);
+
+});
+
+
+document
+.getElementById("restart")
+.addEventListener("click", () => {
+
+  data.durationMs = 0;
+  data.durationSec = 0;
+  data.startTimeISO = "";
+  data.endTimeISO = "";
+
+  showPage("page1");
+
+});
+
+</script>
+
 </body>
 </html>
+```
