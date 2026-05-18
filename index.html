@@ -28,19 +28,10 @@
       padding: 22px 26px;
     }
 
-    .hidden {
-      display: none;
-    }
+    .hidden { display: none; }
 
-    h1 {
-      margin: 0 0 12px;
-      font-size: 26px;
-    }
-
-    h2 {
-      margin: 0 0 12px;
-      font-size: 23px;
-    }
+    h1 { margin: 0 0 12px; font-size: 26px; }
+    h2 { margin: 0 0 12px; font-size: 23px; }
 
     p {
       font-size: 16px;
@@ -75,9 +66,7 @@
       margin-top: 14px;
     }
 
-    button.secondary {
-      background: #667085;
-    }
+    button.secondary { background: #667085; }
 
     .row {
       display: grid;
@@ -93,9 +82,7 @@
       margin: 12px 0;
     }
 
-    .notice p {
-      margin: 6px 0;
-    }
+    .notice p { margin: 6px 0; }
 
     .illustration {
       display: flex;
@@ -115,7 +102,8 @@
       display: block;
     }
 
-    .task-box {
+    .task-box,
+    .confirm-box {
       text-align: center;
       border: 2px dashed #9db3dc;
       background: #f8fbff;
@@ -150,14 +138,17 @@
       margin: 24px 0;
     }
 
-    @media (max-width: 700px) {
-      .row {
-        grid-template-columns: 1fr;
-      }
+    .button-row {
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 18px;
+    }
 
-      .app {
-        padding: 18px;
-      }
+    @media (max-width: 700px) {
+      .row { grid-template-columns: 1fr; }
+      .app { padding: 18px; }
     }
   </style>
 </head>
@@ -197,9 +188,7 @@
 
     </div>
 
-    <button id="toInstruction">
-      下一页
-    </button>
+    <button id="toInstruction">下一页</button>
 
   </section>
 
@@ -233,17 +222,10 @@
     </div>
 
     <div class="illustration">
-
-      <img
-        class="instruction-image"
-        src="press_instruction.webp"
-      />
-
+      <img class="instruction-image" src="press_instruction.webp" />
     </div>
 
-    <button id="toTask">
-      我已理解，开始任务
-    </button>
+    <button id="toTask">我已理解，开始任务</button>
 
   </section>
 
@@ -265,7 +247,7 @@
 
       <p class="small">
         按住鼠标右键时开始计时；
-        松开后会询问是否为意外结束。
+        松开后请判断是否为意外结束。
       </p>
 
     </div>
@@ -273,7 +255,27 @@
   </section>
 
 
-  <!-- PAGE 4 -->
+  <!-- PAGE 4：自定义确认页 -->
+  <section id="pageConfirm" class="hidden">
+
+    <h2>刚才是意外结束的吗？</h2>
+
+    <div class="confirm-box">
+
+      <p>如果刚才是手滑、误松、误触等意外情况，可以选择重新开始。</p>
+      <p>如果不是意外，请选择“非意外”，系统会结束并记录数据。</p>
+
+      <div class="button-row">
+        <button id="accidentalBtn">意外，重新开始</button>
+        <button class="secondary" id="normalBtn">非意外，结束并记录</button>
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- PAGE 5：结果页 -->
   <section id="page4" class="hidden">
 
     <h2>任务结束</h2>
@@ -284,13 +286,9 @@
 
     <p id="resultDetail"></p>
 
-    <button id="downloadCsv">
-      下载本次数据 CSV
-    </button>
+    <button id="downloadCsv">下载本次数据 CSV</button>
 
-    <button class="secondary" id="restart">
-      重新开始
-    </button>
+    <button class="secondary" id="restart">重新开始</button>
 
   </section>
 
@@ -302,6 +300,7 @@ const pages = [
   "page1",
   "page2",
   "page3",
+  "pageConfirm",
   "page4"
 ];
 
@@ -318,7 +317,7 @@ const data = {
 let isPressing = false;
 let startTime = 0;
 let animationFrame = null;
-
+let currentDurationMs = 0;
 
 function showPage(id) {
 
@@ -333,40 +332,30 @@ function showPage(id) {
 
 }
 
-
 function formatTime(ms) {
 
   const totalSeconds = Math.floor(ms / 1000);
-
   const minutes = Math.floor(totalSeconds / 60);
-
   const seconds = totalSeconds % 60;
-
   const milliseconds = Math.floor(ms % 1000);
 
   return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}.${String(milliseconds).padStart(3, "0")}`;
 
 }
 
-
 function formatChineseDuration(ms) {
 
   const totalSeconds = ms / 1000;
-
   const minutes = Math.floor(totalSeconds / 60);
-
   const seconds = totalSeconds - minutes * 60;
 
   if (minutes > 0) {
-
     return `${minutes}分${seconds.toFixed(2)}秒`;
-
   }
 
   return `${seconds.toFixed(2)}秒`;
 
 }
-
 
 function updateTimer() {
 
@@ -374,11 +363,41 @@ function updateTimer() {
 
   const elapsed = performance.now() - startTime;
 
-  document.getElementById("timer").textContent =
-    formatTime(elapsed);
+  document.getElementById("timer").textContent = formatTime(elapsed);
 
-  animationFrame =
-    requestAnimationFrame(updateTimer);
+  animationFrame = requestAnimationFrame(updateTimer);
+
+}
+
+function accidentalRestart() {
+
+  currentDurationMs = 0;
+
+  data.startTimeISO = "";
+  data.endTimeISO = "";
+
+  document.getElementById("timer").textContent = "00:00.000";
+
+  document.getElementById("statusText").textContent =
+    "请用左手小手指按住鼠标右键开始计时";
+
+  showPage("page3");
+
+}
+
+function normalFinish() {
+
+  data.durationMs = currentDurationMs;
+  data.durationSec = data.durationMs / 1000;
+  data.endTimeISO = new Date().toISOString();
+
+  document.getElementById("resultText").textContent =
+    `你坚持了 ${formatChineseDuration(data.durationMs)}`;
+
+  document.getElementById("resultDetail").textContent =
+    `精确记录：${data.durationSec.toFixed(3)} 秒`;
+
+  showPage("page4");
 
 }
 
@@ -393,21 +412,13 @@ document
 .getElementById("toInstruction")
 .addEventListener("click", () => {
 
-  const name =
-    document.getElementById("name").value.trim();
-
-  const age =
-    document.getElementById("age").value.trim();
-
-  const gender =
-    document.getElementById("gender").value;
+  const name = document.getElementById("name").value.trim();
+  const age = document.getElementById("age").value.trim();
+  const gender = document.getElementById("gender").value;
 
   if (!name || !age || !gender) {
-
     alert("请完整填写信息");
-
     return;
-
   }
 
   data.name = name;
@@ -423,8 +434,7 @@ document
 .getElementById("toTask")
 .addEventListener("click", () => {
 
-  document.getElementById("timer").textContent =
-    "00:00.000";
+  document.getElementById("timer").textContent = "00:00.000";
 
   document.getElementById("statusText").textContent =
     "请用左手小手指按住鼠标右键开始计时";
@@ -440,20 +450,16 @@ document.addEventListener(
 
     if (
       document
-      .getElementById("page3")
-      .classList
-      .contains("hidden")
+        .getElementById("page3")
+        .classList
+        .contains("hidden")
     ) return;
 
-    if (event.button !== 2 || isPressing)
-      return;
+    if (event.button !== 2 || isPressing) return;
 
     isPressing = true;
-
     startTime = performance.now();
-
-    data.startTimeISO =
-      new Date().toISOString();
+    data.startTimeISO = new Date().toISOString();
 
     document.getElementById("statusText").textContent =
       "正在计时，请根据自己的决定继续或松开";
@@ -470,57 +476,32 @@ document.addEventListener(
 
     if (
       document
-      .getElementById("page3")
-      .classList
-      .contains("hidden")
+        .getElementById("page3")
+        .classList
+        .contains("hidden")
     ) return;
 
-    if (event.button !== 2 || !isPressing)
-      return;
+    if (event.button !== 2 || !isPressing) return;
 
     isPressing = false;
-
     cancelAnimationFrame(animationFrame);
 
-    const currentDurationMs =
-      performance.now() - startTime;
+    currentDurationMs = performance.now() - startTime;
 
-    const accidental = confirm(
-      "刚才是意外结束的吗？\n\n点击“意外”重新开始\n点击“非意外”结束并记录数据"
-    );
-
-    // 意外结束 → 重来
-    if (accidental) {
-
-      document.getElementById("timer").textContent =
-        "00:00.000";
-
-      document.getElementById("statusText").textContent =
-        "请用左手小手指按住鼠标右键开始计时";
-
-      return;
-
-    }
-
-    // 正常结束
-    data.durationMs = currentDurationMs;
-
-    data.durationSec =
-      data.durationMs / 1000;
-
-    data.endTimeISO =
-      new Date().toISOString();
-
-    document.getElementById("resultText").textContent =
-      `你坚持了 ${formatChineseDuration(data.durationMs)}`;
-
-    document.getElementById("resultDetail").textContent =
-      `精确记录：${data.durationSec.toFixed(3)} 秒`;
-
-    showPage("page4");
+    showPage("pageConfirm");
 
   }
 );
+
+
+document
+.getElementById("accidentalBtn")
+.addEventListener("click", accidentalRestart);
+
+
+document
+.getElementById("normalBtn")
+.addEventListener("click", normalFinish);
 
 
 document
@@ -555,27 +536,19 @@ document
       .map(v => `"${String(v).replaceAll('"', '""')}"`)
       .join(",");
 
-  const blob =
-    new Blob(
-      [csv],
-      { type: "text/csv;charset=utf-8;" }
-    );
+  const blob = new Blob(
+    [csv],
+    { type: "text/csv;charset=utf-8;" }
+  );
 
-  const url =
-    URL.createObjectURL(blob);
-
-  const a =
-    document.createElement("a");
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
 
   a.href = url;
-
-  a.download =
-    `press_task_${data.name}_${Date.now()}.csv`;
+  a.download = `press_task_${data.name}_${Date.now()}.csv`;
 
   document.body.appendChild(a);
-
   a.click();
-
   document.body.removeChild(a);
 
   URL.revokeObjectURL(url);
@@ -591,6 +564,9 @@ document
   data.durationSec = 0;
   data.startTimeISO = "";
   data.endTimeISO = "";
+  currentDurationMs = 0;
+
+  document.getElementById("timer").textContent = "00:00.000";
 
   showPage("page1");
 
