@@ -1,14 +1,11 @@
-```html
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>慈善捐赠持续按压任务</title>
-
+  <title>慈善捐赠持续按压与表扬实验</title>
   <style>
     * { box-sizing: border-box; }
-
     body {
       margin: 0;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif;
@@ -18,587 +15,492 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 12px;
+      padding: 10px;
     }
-
     .app {
-      width: min(920px, 100%);
+      width: min(960px, 100%);
       background: white;
       border-radius: 22px;
       box-shadow: 0 18px 50px rgba(36, 52, 86, 0.15);
-      padding: 22px 26px;
+      padding: 20px 24px;
     }
-
-    .hidden {
-      display: none;
-    }
-
-    h1 {
-      margin: 0 0 12px;
-      font-size: 26px;
-    }
-
-    h2 {
-      margin: 0 0 12px;
-      font-size: 23px;
-    }
-
-    p {
-      font-size: 16px;
-      line-height: 1.45;
-    }
-
-    label {
-      display: block;
-      margin: 12px 0 6px;
-      font-weight: 700;
-      font-size: 16px;
-    }
-
-    input,
-    select {
+    .hidden { display: none; }
+    h1 { margin: 0 0 10px; font-size: 25px; }
+    h2 { margin: 0 0 10px; font-size: 22px; }
+    p { font-size: 16px; line-height: 1.45; margin: 8px 0; }
+    label { display: block; margin: 10px 0 5px; font-weight: 700; font-size: 16px; }
+    input, select {
       width: 100%;
-      padding: 11px 12px;
+      padding: 10px 12px;
       border: 1px solid #cfd7e6;
       border-radius: 12px;
       font-size: 16px;
     }
-
     button {
       border: none;
       border-radius: 14px;
-      padding: 12px 22px;
+      padding: 11px 22px;
       font-size: 16px;
       font-weight: 700;
       background: #2f66d0;
       color: white;
       cursor: pointer;
-      margin-top: 14px;
+      margin-top: 12px;
     }
-
-    button.secondary {
-      background: #667085;
-    }
-
-    .row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 18px;
-    }
-
+    button.secondary { background: #667085; }
+    button.danger { background: #d92d20; }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
     .notice {
       background: #f0f6ff;
       border-left: 5px solid #2f66d0;
-      padding: 12px 16px;
+      padding: 11px 15px;
       border-radius: 12px;
-      margin: 12px 0;
+      margin: 10px 0;
     }
-
-    .notice p {
-      margin: 6px 0;
-    }
-
+    .notice p { margin: 5px 0; }
     .illustration {
       display: flex;
       justify-content: center;
       background: #fafcff;
       border: 1px solid #e4eaf5;
       border-radius: 18px;
-      padding: 10px;
-      margin: 10px 0;
+      padding: 8px;
+      margin: 8px 0;
     }
-
     .instruction-image {
-      width: min(620px, 100%);
-      max-height: 300px;
+      width: min(580px, 100%);
+      max-height: 260px;
       object-fit: contain;
       border-radius: 12px;
       display: block;
     }
-
-    .task-box {
+    .task-box, .trial-box {
       text-align: center;
       border: 2px dashed #9db3dc;
       background: #f8fbff;
       border-radius: 24px;
-      padding: 36px 18px;
+      padding: 28px 18px;
       user-select: none;
     }
-
     .timer {
       font-variant-numeric: tabular-nums;
-      font-size: clamp(48px, 9vw, 94px);
+      font-size: clamp(46px, 8vw, 86px);
       font-weight: 800;
-      margin: 22px 0;
+      margin: 18px 0;
       color: #1d4ed8;
     }
-
-    .status {
-      font-size: 22px;
-      font-weight: 700;
+    .status { font-size: 21px; font-weight: 700; color: #344054; }
+    .small { font-size: 14px; color: #667085; }
+    .result { font-size: 26px; font-weight: 800; color: #1d4ed8; margin: 16px 0; }
+    .progress { color: #667085; font-weight: 700; margin-bottom: 8px; }
+    .rule { font-size: 20px; font-weight: 800; color: #1d2939; }
+    .highlight { color: #d92d20; }
+    .slider-wrap { margin: 26px 10px 10px; position: relative; padding-top: 36px; }
+    input[type="range"] { width: 100%; padding: 0; }
+    .axis-labels { display: flex; justify-content: space-between; color: #667085; font-size: 13px; margin-top: 6px; }
+    .marker {
+      position: absolute;
+      top: 0;
+      transform: translateX(-50%);
+      text-align: center;
+      font-size: 13px;
+      font-weight: 800;
       color: #344054;
+      white-space: nowrap;
     }
-
-    .small {
-      font-size: 15px;
-      color: #667085;
+    .marker::after {
+      content: "";
+      display: block;
+      width: 2px;
+      height: 30px;
+      background: currentColor;
+      margin: 4px auto 0;
+      opacity: 0.8;
     }
-
-    .result {
-      font-size: 28px;
-      font-weight: 800;
-      color: #1d4ed8;
-      margin: 24px 0;
-    }
-
+    .baseline-marker { color: #1d4ed8; }
+    .threshold-marker { color: #d92d20; }
+    .choice-value { font-size: 30px; font-weight: 900; color: #1d4ed8; margin: 16px 0 4px; }
+    .button-row { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
     @media (max-width: 700px) {
-      .row {
-        grid-template-columns: 1fr;
-      }
-
-      .app {
-        padding: 18px;
-      }
+      .row { grid-template-columns: 1fr; gap: 6px; }
+      .app { padding: 16px; }
+      .instruction-image { max-height: 220px; }
     }
   </style>
 </head>
-
 <body>
-
 <main class="app">
 
-  <!-- PAGE 1 -->
   <section id="page1">
-
     <h1>慈善捐赠持续按压任务</h1>
-
     <p>请先填写基本信息。</p>
-
     <label>姓名</label>
     <input id="name" type="text" />
-
     <div class="row">
-
       <div>
         <label>年龄</label>
         <input id="age" type="number" min="1" max="120" />
       </div>
-
       <div>
         <label>性别</label>
-
         <select id="gender">
           <option value="">请选择</option>
           <option value="女">女</option>
           <option value="男">男</option>
           <option value="其他/不便说明">其他/不便说明</option>
         </select>
-
       </div>
-
     </div>
-
-    <button id="toInstruction">
-      下一页
-    </button>
-
+    <button id="toInstruction">下一页</button>
   </section>
 
-
-  <!-- PAGE 2 -->
   <section id="page2" class="hidden">
-
     <h2>任务说明</h2>
-
     <div class="notice">
-
       <p>请你将鼠标放在左手的左边，用左手小手指持续摁压鼠标右键。</p>
-
-      <p>注意：手腕、手掌、其他手指都悬空，并且其他手指尽量远离小拇指。</p>
-
-      <p>
-        如果你摁压时间越长，
-        我们给慈善组织捐的钱就越多。
-        请你决定你要坚持多长时间，
-        这完全由你自己决定。
-      </p>
-
-      <p>
-        注意：
-        我们不是为了测验极限，
-        所以不要勉强自己。
-        如果感到不舒服，
-        可以随时拿开小手指。
-      </p>
-
+      <p>注意：手腕、手掌、其他手指都悬空。</p>
+      <p>如果你摁压时间越长，我们给慈善组织捐的钱就越多。请你决定你要坚持多长时间，这完全由你自己决定。</p>
+      <p>注意：我们不是为了测验极限，所以不要勉强自己。如果感到不舒服，可以随时拿开小手指。</p>
     </div>
-
     <div class="illustration">
-
-      <img
-        class="instruction-image"
-        src="press_instruction.webp"
-      />
-
+      <img class="instruction-image" src="press_instruction.webp" alt="用左手小拇指按压鼠标右键示意图" />
     </div>
-
-    <button id="toTask">
-      我已理解，开始任务
-    </button>
-
+    <button id="toTask">我已理解，开始任务</button>
   </section>
 
-
-  <!-- PAGE 3 -->
   <section id="page3" class="hidden">
-
     <h2>开始按压</h2>
-
     <div class="task-box">
-
-      <div class="status" id="statusText">
-        请用左手小手指按住鼠标右键开始计时
-      </div>
-
-      <div class="timer" id="timer">
-        00:00.000
-      </div>
-
-      <p class="small">
-        按住鼠标右键时开始计时；
-        松开后会询问是否为意外结束。
-      </p>
-
+      <div class="status" id="statusText">请用左手小手指按住鼠标右键开始计时</div>
+      <div class="timer" id="timer">00:00.000</div>
+      <p class="small">按住鼠标右键时开始计时；松开后会询问是否为意外结束。</p>
     </div>
-
   </section>
 
-
-  <!-- PAGE 4 -->
   <section id="page4" class="hidden">
+    <h2>基线任务完成</h2>
+    <p>你最初坚持了：</p>
+    <div class="result" id="baselineResultText"></div>
+    <p>接下来，你将进入 57 个不同的小组，并在每个小组中选择你愿意坚持的时间。</p>
+    <button id="toPraiseIntro">继续</button>
+  </section>
 
-    <h2>任务结束</h2>
+  <section id="page5" class="hidden">
+    <h2>小组任务说明</h2>
+    <div class="notice">
+      <p>我们把全国参与研究的学生随机打乱，形成了 57 个小组。</p>
+      <p>接下来，你会依次进入这 57 个不同的小组，并成为小组成员。</p>
+      <p>每个小组都有自己特殊的规则。你坚持得越久，我们实验人员给慈善组织的捐款就越多。</p>
+      <p>每次进入小组后，请根据该小组的规则，选择你现在愿意坚持多久。</p>
+    </div>
+    <button id="startTrials">开始进入小组</button>
+  </section>
 
+  <section id="page6" class="hidden">
+    <div class="progress" id="trialProgress"></div>
+    <div class="trial-box">
+      <h2 id="groupTitle"></h2>
+      <p class="rule" id="groupRule"></p>
+      <p id="baselineReminder"></p>
+      <p>再给你一次机会，你现在愿意坚持多久？</p>
+
+      <div class="slider-wrap" id="sliderWrap">
+        <div class="marker baseline-marker" id="baselineMarker">最初时间</div>
+        <div class="marker threshold-marker" id="thresholdMarker">表扬阈值</div>
+        <input id="choiceSlider" type="range" min="0" max="240" step="1" value="0" />
+        <div class="axis-labels">
+          <span>0秒</span>
+          <span id="axisMaxLabel">240秒</span>
+        </div>
+      </div>
+
+      <div class="choice-value" id="choiceValue"></div>
+      <button id="submitChoice">确定选择，进入下一小组</button>
+    </div>
+  </section>
+
+  <section id="page7" class="hidden">
+    <h2>实验结束</h2>
     <p>感谢你的参与！</p>
-
-    <div class="result" id="resultText"></div>
-
-    <p id="resultDetail"></p>
-
-    <button id="downloadCsv">
-      下载本次数据 CSV
-    </button>
-
-    <button class="secondary" id="restart">
-      重新开始
-    </button>
-
+    <div class="result">你已经完成全部 57 个小组任务。</div>
+    <div class="button-row">
+      <button id="downloadCsv">下载本次数据 CSV</button>
+      <button class="secondary" id="restart">重新开始</button>
+    </div>
   </section>
 
 </main>
 
 <script>
+const pages = ["page1", "page2", "page3", "page4", "page5", "page6", "page7"];
 
-const pages = [
-  "page1",
-  "page2",
-  "page3",
-  "page4"
-];
+const multipliers = [0, 0.2, 0.4, 0.6, 0.7, 0.8, 0.9, 1, 1.1, 1.2, 1.3, 1.4, 1.6, 1.8, 2, 2.5, 3, 3.5, 4];
 
 const data = {
   name: "",
   age: "",
   gender: "",
-  durationMs: 0,
-  durationSec: 0,
-  startTimeISO: "",
-  endTimeISO: ""
+  baselineMs: 0,
+  baselineSec: 0,
+  baselineMin: 0,
+  baselineStartTimeISO: "",
+  baselineEndTimeISO: "",
+  trials: []
 };
 
 let isPressing = false;
 let startTime = 0;
 let animationFrame = null;
-
+let trialList = [];
+let currentTrialIndex = 0;
+let axisMaxSec = 240;
 
 function showPage(id) {
-
-  pages.forEach(page => {
-
-    document
-      .getElementById(page)
-      .classList
-      .toggle("hidden", page !== id);
-
-  });
-
+  pages.forEach(page => document.getElementById(page).classList.toggle("hidden", page !== id));
 }
-
 
 function formatTime(ms) {
-
   const totalSeconds = Math.floor(ms / 1000);
-
   const minutes = Math.floor(totalSeconds / 60);
-
   const seconds = totalSeconds % 60;
-
   const milliseconds = Math.floor(ms % 1000);
-
   return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}.${String(milliseconds).padStart(3, "0")}`;
-
 }
 
+function formatChineseDurationFromSec(sec) {
+  const minutes = Math.floor(sec / 60);
+  const seconds = sec - minutes * 60;
+  if (minutes > 0) return `${minutes}分${seconds.toFixed(1)}秒`;
+  return `${seconds.toFixed(1)}秒`;
+}
 
 function formatChineseDuration(ms) {
-
-  const totalSeconds = ms / 1000;
-
-  const minutes = Math.floor(totalSeconds / 60);
-
-  const seconds = totalSeconds - minutes * 60;
-
-  if (minutes > 0) {
-
-    return `${minutes}分${seconds.toFixed(2)}秒`;
-
-  }
-
-  return `${seconds.toFixed(2)}秒`;
-
+  return formatChineseDurationFromSec(ms / 1000);
 }
-
 
 function updateTimer() {
-
   if (!isPressing) return;
-
   const elapsed = performance.now() - startTime;
-
-  document.getElementById("timer").textContent =
-    formatTime(elapsed);
-
-  animationFrame =
-    requestAnimationFrame(updateTimer);
-
+  document.getElementById("timer").textContent = formatTime(elapsed);
+  animationFrame = requestAnimationFrame(updateTimer);
 }
 
-
-document.addEventListener(
-  "contextmenu",
-  e => e.preventDefault()
-);
-
-
-document
-.getElementById("toInstruction")
-.addEventListener("click", () => {
-
-  const name =
-    document.getElementById("name").value.trim();
-
-  const age =
-    document.getElementById("age").value.trim();
-
-  const gender =
-    document.getElementById("gender").value;
-
-  if (!name || !age || !gender) {
-
-    alert("请完整填写信息");
-
-    return;
-
+function shuffle(array) {
+  const arr = [...array];
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
   }
+  return arr;
+}
 
-  data.name = name;
-  data.age = age;
-  data.gender = gender;
-
-  showPage("page2");
-
-});
-
-
-document
-.getElementById("toTask")
-.addEventListener("click", () => {
-
-  document.getElementById("timer").textContent =
-    "00:00.000";
-
-  document.getElementById("statusText").textContent =
-    "请用左手小手指按住鼠标右键开始计时";
-
-  showPage("page3");
-
-});
-
-
-document.addEventListener(
-  "mousedown",
-  event => {
-
-    if (
-      document
-      .getElementById("page3")
-      .classList
-      .contains("hidden")
-    ) return;
-
-    if (event.button !== 2 || isPressing)
-      return;
-
-    isPressing = true;
-
-    startTime = performance.now();
-
-    data.startTimeISO =
-      new Date().toISOString();
-
-    document.getElementById("statusText").textContent =
-      "正在计时，请根据自己的决定继续或松开";
-
-    updateTimer();
-
-  }
-);
-
-
-document.addEventListener(
-  "mouseup",
-  event => {
-
-    if (
-      document
-      .getElementById("page3")
-      .classList
-      .contains("hidden")
-    ) return;
-
-    if (event.button !== 2 || !isPressing)
-      return;
-
-    isPressing = false;
-
-    cancelAnimationFrame(animationFrame);
-
-    const currentDurationMs =
-      performance.now() - startTime;
-
-    const accidental = confirm(
-      "刚才是意外结束的吗？\n\n点击“确定”重新开始\n点击“取消”结束并记录数据"
-    );
-
-    // 意外结束 → 重来
-    if (accidental) {
-
-      document.getElementById("timer").textContent =
-        "00:00.000";
-
-      document.getElementById("statusText").textContent =
-        "请用左手小手指按住鼠标右键开始计时";
-
-      return;
-
+function makeTrialList() {
+  const raw = [];
+  multipliers.forEach(multiplier => {
+    for (let repeat = 1; repeat <= 3; repeat++) {
+      raw.push({ multiplier, repeat });
     }
+  });
+  return shuffle(raw).map((trial, index) => ({
+    ...trial,
+    groupNumber: index + 1,
+    order: index + 1
+  }));
+}
 
-    // 正常结束
-    data.durationMs = currentDurationMs;
+function setMarkerPosition(markerId, sec) {
+  const pct = Math.max(0, Math.min(100, (sec / axisMaxSec) * 100));
+  document.getElementById(markerId).style.left = `${pct}%`;
+}
 
-    data.durationSec =
-      data.durationMs / 1000;
+function renderTrial() {
+  const trial = trialList[currentTrialIndex];
+  const baselineSec = data.baselineSec;
+  const thresholdSec = baselineSec * trial.multiplier;
 
-    data.endTimeISO =
-      new Date().toISOString();
+  axisMaxSec = Math.max(60, Math.ceil(baselineSec * 4.2));
+  const slider = document.getElementById("choiceSlider");
+  slider.max = axisMaxSec;
+  slider.value = Math.round(baselineSec);
 
-    document.getElementById("resultText").textContent =
-      `你坚持了 ${formatChineseDuration(data.durationMs)}`;
+  document.getElementById("axisMaxLabel").textContent = formatChineseDurationFromSec(axisMaxSec);
+  document.getElementById("trialProgress").textContent = `当前进度：${currentTrialIndex + 1} / ${trialList.length}`;
+  document.getElementById("groupTitle").textContent = `你现在进入第 ${trial.groupNumber} 小组`;
+  document.getElementById("groupRule").innerHTML = `该小组的规则是：如果坚持多于 <span class="highlight">${formatChineseDurationFromSec(thresholdSec)}</span>，会获得小组其他成员的表扬。`;
+  document.getElementById("baselineReminder").textContent = `你最初坚持了 ${formatChineseDurationFromSec(baselineSec)}。`;
 
-    document.getElementById("resultDetail").textContent =
-      `精确记录：${data.durationSec.toFixed(3)} 秒`;
+  document.getElementById("baselineMarker").innerHTML = `最初时间<br>${formatChineseDurationFromSec(baselineSec)}`;
+  document.getElementById("thresholdMarker").innerHTML = `表扬阈值<br>${formatChineseDurationFromSec(thresholdSec)}`;
+  setMarkerPosition("baselineMarker", baselineSec);
+  setMarkerPosition("thresholdMarker", thresholdSec);
+  updateChoiceValue();
+}
 
-    showPage("page4");
+function updateChoiceValue() {
+  const sec = Number(document.getElementById("choiceSlider").value);
+  document.getElementById("choiceValue").textContent = `我愿意坚持：${formatChineseDurationFromSec(sec)}`;
+}
 
-  }
-);
-
-
-document
-.getElementById("downloadCsv")
-.addEventListener("click", () => {
-
+function downloadCsv() {
   const headers = [
-    "姓名",
-    "年龄",
-    "性别",
-    "开始时间",
-    "结束时间",
-    "持续时间_秒",
-    "持续时间_毫秒"
+    "姓名", "年龄", "性别",
+    "基线开始时间", "基线结束时间", "基线时间_秒", "基线时间_分钟",
+    "试次顺序", "小组编号", "条件倍数", "重复编号", "表扬阈值_秒", "选择时间_秒", "选择时间_分钟", "反应时间_毫秒"
   ];
 
-  const values = [
+  const rows = data.trials.map(t => [
     data.name,
     data.age,
     data.gender,
-    data.startTimeISO,
-    data.endTimeISO,
-    data.durationSec.toFixed(3),
-    Math.round(data.durationMs)
-  ];
+    data.baselineStartTimeISO,
+    data.baselineEndTimeISO,
+    data.baselineSec.toFixed(3),
+    data.baselineMin.toFixed(3),
+    t.order,
+    t.groupNumber,
+    t.multiplier,
+    t.repeat,
+    t.thresholdSec.toFixed(3),
+    t.choiceSec.toFixed(3),
+    (t.choiceSec / 60).toFixed(3),
+    Math.round(t.responseTimeMs)
+  ]);
 
-  const csv =
-    "\ufeff"
-    + headers.join(",")
-    + "\n"
-    + values
-      .map(v => `"${String(v).replaceAll('"', '""')}"`)
-      .join(",");
+  const csv = "﻿" + [headers, ...rows]
+    .map(row => row.map(v => `"${String(v).replaceAll('"', '""')}"`).join(","))
+    .join("
+");
 
-  const blob =
-    new Blob(
-      [csv],
-      { type: "text/csv;charset=utf-8;" }
-    );
-
-  const url =
-    URL.createObjectURL(blob);
-
-  const a =
-    document.createElement("a");
-
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
   a.href = url;
-
-  a.download =
-    `press_task_${data.name}_${Date.now()}.csv`;
-
+  a.download = `praise_experiment_${data.name || "participant"}_${Date.now()}.csv`;
   document.body.appendChild(a);
-
   a.click();
-
   document.body.removeChild(a);
-
   URL.revokeObjectURL(url);
+}
 
+let trialPageStartTime = 0;
+
+document.addEventListener("contextmenu", e => e.preventDefault());
+
+document.getElementById("toInstruction").addEventListener("click", () => {
+  const name = document.getElementById("name").value.trim();
+  const age = document.getElementById("age").value.trim();
+  const gender = document.getElementById("gender").value;
+  if (!name || !age || !gender) {
+    alert("请完整填写姓名、年龄和性别。");
+    return;
+  }
+  data.name = name;
+  data.age = age;
+  data.gender = gender;
+  showPage("page2");
 });
 
+document.getElementById("toTask").addEventListener("click", () => {
+  document.getElementById("timer").textContent = "00:00.000";
+  document.getElementById("statusText").textContent = "请用左手小手指按住鼠标右键开始计时";
+  showPage("page3");
+});
 
-document
-.getElementById("restart")
-.addEventListener("click", () => {
+document.addEventListener("mousedown", event => {
+  if (document.getElementById("page3").classList.contains("hidden")) return;
+  if (event.button !== 2 || isPressing) return;
+  isPressing = true;
+  startTime = performance.now();
+  data.baselineStartTimeISO = new Date().toISOString();
+  document.getElementById("statusText").textContent = "正在计时，请根据自己的决定继续或松开";
+  updateTimer();
+});
 
-  data.durationMs = 0;
-  data.durationSec = 0;
-  data.startTimeISO = "";
-  data.endTimeISO = "";
+document.addEventListener("mouseup", event => {
+  if (document.getElementById("page3").classList.contains("hidden")) return;
+  if (event.button !== 2 || !isPressing) return;
 
+  isPressing = false;
+  cancelAnimationFrame(animationFrame);
+  const currentDurationMs = performance.now() - startTime;
+
+  const accidental = confirm("刚才是意外结束的吗？
+
+点击“确定”重新开始
+点击“取消”继续实验");
+
+  if (accidental) {
+    document.getElementById("timer").textContent = "00:00.000";
+    document.getElementById("statusText").textContent = "请用左手小手指按住鼠标右键开始计时";
+    data.baselineStartTimeISO = "";
+    data.baselineEndTimeISO = "";
+    return;
+  }
+
+  data.baselineMs = currentDurationMs;
+  data.baselineSec = data.baselineMs / 1000;
+  data.baselineMin = data.baselineSec / 60;
+  data.baselineEndTimeISO = new Date().toISOString();
+
+  document.getElementById("baselineResultText").textContent = formatChineseDuration(data.baselineMs);
+  showPage("page4");
+});
+
+document.getElementById("toPraiseIntro").addEventListener("click", () => {
+  showPage("page5");
+});
+
+document.getElementById("startTrials").addEventListener("click", () => {
+  trialList = makeTrialList();
+  data.trials = [];
+  currentTrialIndex = 0;
+  renderTrial();
+  trialPageStartTime = performance.now();
+  showPage("page6");
+});
+
+document.getElementById("choiceSlider").addEventListener("input", updateChoiceValue);
+
+document.getElementById("submitChoice").addEventListener("click", () => {
+  const trial = trialList[currentTrialIndex];
+  const choiceSec = Number(document.getElementById("choiceSlider").value);
+  const thresholdSec = data.baselineSec * trial.multiplier;
+  const responseTimeMs = performance.now() - trialPageStartTime;
+
+  data.trials.push({
+    order: trial.order,
+    groupNumber: trial.groupNumber,
+    multiplier: trial.multiplier,
+    repeat: trial.repeat,
+    thresholdSec,
+    choiceSec,
+    responseTimeMs
+  });
+
+  currentTrialIndex++;
+
+  if (currentTrialIndex >= trialList.length) {
+    showPage("page7");
+    return;
+  }
+
+  renderTrial();
+  trialPageStartTime = performance.now();
+});
+
+document.getElementById("downloadCsv").addEventListener("click", downloadCsv);
+
+document.getElementById("restart").addEventListener("click", () => {
+  data.baselineMs = 0;
+  data.baselineSec = 0;
+  data.baselineMin = 0;
+  data.baselineStartTimeISO = "";
+  data.baselineEndTimeISO = "";
+  data.trials = [];
+  currentTrialIndex = 0;
+  document.getElementById("timer").textContent = "00:00.000";
   showPage("page1");
-
 });
-
 </script>
-
 </body>
 </html>
-```
